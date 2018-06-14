@@ -1,4 +1,6 @@
 #!/bin/bash
 #
-/run.sh & 
-/usr/bin/nodejs ./bin/www > grafana_proxy.out
+# Start Grafana
+/run.sh &
+# Start Proxy
+npm start > grafana_proxy.out

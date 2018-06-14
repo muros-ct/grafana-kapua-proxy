@@ -11,7 +11,10 @@ ADD ./start.sh /app
 USER root
 
 # Install node.js and node package manager
-RUN apt-get update && apt-get -y install nodejs
+RUN apt-get update && apt-get -y install gnupg && curl -sL https://deb.nodesource.com/setup_6.x | bash - && apt-get -y install nodejs
+
+# Install Node dependencies for app
+RUN npm install
 
 # Make port 3333 available to the world outside this container,
 # this is where grafana-proxy is running.
@@ -35,6 +38,7 @@ ENV GF_SERVER_DOMAIN localhost
 ENV GF_SERVER_ROOT_URL http://localhost:3000/gp
 ENV GF_SERVER_HTTP_PORT 3000
 
+# Configure Grafana Auth Proxy
 RUN echo "#################################### Auth Proxy ##########################" >> $GF_PATHS_CONFIG &&\
     echo "[auth.proxy]" >> $GF_PATHS_CONFIG &&\
     echo "enabled = true" >> $GF_PATHS_CONFIG &&\
@@ -42,5 +46,5 @@ RUN echo "#################################### Auth Proxy ######################
     echo "header_property = username" >> $GF_PATHS_CONFIG &&\
     echo "auto_sign_up = true" >> $GF_PATHS_CONFIG
 
-# Run node app when the container launches
+# Run Grafana and node app when the container launches
 ENTRYPOINT ["./start.sh"]
