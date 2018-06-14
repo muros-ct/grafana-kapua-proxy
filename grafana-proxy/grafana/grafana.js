@@ -232,7 +232,6 @@ addUserToOrganization = function(orgId, userName, callback) {
             switchOrganizationForUser(1, orgId, function (success) {
                 callback(success);
             });
-            callback(true)
         } else {
             callback(false);
         }

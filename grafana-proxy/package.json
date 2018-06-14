@@ -1,9 +1,15 @@
 {
   "name": "grafana-proxy",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Grafana Kapua Auth Proxy",
+  "author": "Uros Mesaric Kunst <uros.mesaric-kunst@comtrade.com",
+  "main": "./bin/www.js",
   "scripts": {
     "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muros-ct/grafana-kapua-proxy.git"
   },
   "dependencies": {
     "big-integer": "^1.6.30",

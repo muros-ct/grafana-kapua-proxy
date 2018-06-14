@@ -57,6 +57,7 @@ app.post(settings.GRAFANA_PROXY_ROOT_URL + 'grafana/login', function(req, res){
                         multiplier = multiplier.multiply(256);
                     }
                     grafana.initAccount(orgName, result, user.username, function (success) {
+                        console.log('Init account success ' + success);
                         if (success) {
                             res.render('loggedin', { redirect_url:  settings.GRAFANA_PROXY + ':' + settings.GRAFANA_PROXY_REDIRECT_PORT + settings.GRAFANA_PROXY_ROOT_URL});
                         } else {
