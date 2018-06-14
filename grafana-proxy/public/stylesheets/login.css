@@ -1,0 +1,55 @@
+.background {
+    background: url("./grafana-backgroung.png");
+    color: white;
+}
+
+.login-container {
+    margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 50%;
+    height: auto;
+}
+
+.logo {
+    width: 30%;
+    border-right: 1px solid white;
+    float: left;
+    padding: 25px;
+}
+
+.form {
+    width: auto;
+    float: left;
+    padding: 80px;
+    padding-top: 60px;
+}
+
+.input {
+    width: 100%;
+    margin-bottom: 20px;
+    height: 35px;
+    opacity: 0.5;
+    border-radius: 5px;
+    border: 1px solid white;
+    padding: 10px;
+    background-color: darkblue;
+    color: white;
+}
+
+.button-container {
+    text-align: left;
+}
+
+.button {
+    background-color: #e45602;
+    height: 45px;
+    width: 100px;
+    color: white;
+    border: darkgoldenrod solid 2px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}

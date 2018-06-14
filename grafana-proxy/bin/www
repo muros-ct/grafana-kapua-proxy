@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+
+var http = require('http'),
+    httpProxy = require('http-proxy');
+
+var app = require('../app');
+var cookie = require('cookie');
+var kapua = require('../kapua/kapua')
+
+var settings = require('../settings');
+
+//
+// Create a proxy server with custom application logic
+//
+var proxy = httpProxy.createProxyServer({});
+
+// To modify the proxy connection before data is sent, you can listen
+// for the 'proxyReq' event. When the event is fired, you will receive
+// the following arguments:
+// (http.ClientRequest proxyReq, http.IncomingMessage req,
+//  http.ServerResponse res, Object options). This mechanism is useful when
+// you need to modify the proxy request before the proxy connection
+// is made to the target.
+//
+proxy.on('proxyReq', function(proxyReq, req, res, options) {
+
+    if (req.url != '/gp/login') {
+        req.url = req.url.replace(settings.GRAFANA_PROXY_ROOT_URL, '/');
+        proxyReq.path = proxyReq.path.replace(settings.GRAFANA_PROXY_ROOT_URL, '/');
+    }
+    console.log('http-proxy req ' + req.url + ' to ' + options.target.href);
+    proxyReq.setHeader('X-WEBAUTH-USER', req.cookies.username);
+});
+
+
+var server = http.createServer(function(req, res) {
+    // You can define here your custom logic to handle the request
+    // and then proxy the request.
+
+    var cookies = req.headers.cookie;
+    if (cookies) {
+        req.cookies = cookie.parse(cookies);
+    }
+
+    if (cookies && req.cookies.tokenId && req.url != (settings.GRAFANA_PROXY_ROOT_URL + 'logout')) {
+        // Check data access
+        kapua.checkDataAccess(req.cookies.tokenId, function(success) {
+            if (success) {
+                // if ok
+                proxy.web(req, res, {
+                    target: settings.GRAFANA_HOST + ':' + settings.GRAFANA_PORT
+                });
+            } else {
+                req.url = settings.GRAFANA_PROXY_ROOT_URL + 'logout'
+                app(req, res);
+            }
+        });
+
+
+    } else {
+        // Workaround express in combination with http-proxy
+        if (req.url === '/') {
+            req.url = settings.GRAFANA_PROXY_ROOT_URL + "login";
+        }
+        console.log('express app to ' + req.url);
+        app(req, res);
+    }
+
+});
+
+console.log("Proxy listening on port " +  settings.GRAFANA_PROXY_PORT)
+server.listen(settings.GRAFANA_PROXY_PORT);
